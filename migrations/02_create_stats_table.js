@@ -8,7 +8,7 @@ export function up(knex) {
         table.integer('user_id').unsigned().references('user.id').onUpdate('CASCADE').onDelete('CASCADE')
         table.integer('games_played_single').unsigned()
         table.integer('games_played_multi').unsigned()
-        table.integer('total_points').unisnged()
+        table.integer('total_points').unsigned()
         table.integer('max_score').unsigned()
     })
 }
