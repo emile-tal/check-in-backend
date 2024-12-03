@@ -1,8 +1,11 @@
 import bcrypt from 'bcrypt'
 import configuration from '../knexfile.js'
+import dotenv from 'dotenv'
 import express from 'express'
 import initKnex from 'knex'
 import jwt from 'jsonwebtoken'
+
+dotenv.config()
 
 const saltRounds = 10
 
@@ -44,7 +47,7 @@ router.route('/login')
                 return res.status(401).json({ message: "Password is incorrect" })
             }
             const jwtToken = jwt.sign(
-                { id: user.id, name: user.username }, JWT_SECRET
+                { id: user.id, name: user.username }, process.env.JWT_SECRET
             )
             res.status(200).json({ message: "Login successful", token: jwtToken })
         } catch (error) {
@@ -57,17 +60,18 @@ router.route('/register')
         const { username, password, email } = req.body
 
         if (!username || !password || !email) {
-            return res.status(400).json({ message: "Username and password is required" })
+            return res.status(400).json({ message: "Username, password and email is required" })
         }
         try {
-            const hashedPass = hashPass(password)
+            const hashedPass = await hashPass(password)
+            console.log(hashedPass)
             const [newUserId] = await knex('user').insert({
                 username,
-                hashedPass,
+                password: hashedPass,
                 email
             })
             const jwtToken = jwt.sign(
-                { id: newUserId, name: username }, JWT_SECRET
+                { id: newUserId, name: username }, process.env.JWT_SECRET
             )
             res.status(201).json({ message: "User created successfully", token: jwtToken })
         } catch (error) {
