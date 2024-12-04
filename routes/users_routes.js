@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import express from 'express'
 import initKnex from 'knex'
 import jwt from 'jsonwebtoken'
+import { verifyToken } from '../authentication.js'
 
 dotenv.config()
 
@@ -30,6 +31,20 @@ const checkPass = async (password, dbPass) => {
     }
 }
 
+router.route('/')
+    .get(verifyToken, async (req, res) => {
+        try {
+            const user = await knex(`user`).where({ id: req.id.id }).first()
+            if (!user) {
+                return res.status(400).json({ message: "User does not exist" })
+            }
+            const { id, username } = user
+            res.status(200).json({ message: 'User information retrieved successfully', id: id, username: username })
+        } catch (error) {
+            res.status(500).json({ message: 'Unable to retrieve user data' })
+        }
+    })
+
 router.route('/login')
     .post(async (req, res) => {
         const { username, password } = req.body
@@ -39,7 +54,7 @@ router.route('/login')
         }
 
         try {
-            const user = await knex('user').where({ username: username }).first()
+            const user = await knex(`user`).where({ username: username }).first()
             if (!user) {
                 return res.status(401).json({ message: "Username is incorrect" })
             }
@@ -64,8 +79,7 @@ router.route('/register')
         }
         try {
             const hashedPass = await hashPass(password)
-            console.log(hashedPass)
-            const [newUserId] = await knex('user').insert({
+            const [newUserId] = await knex(`user`).insert({
                 username,
                 password: hashedPass,
                 email
