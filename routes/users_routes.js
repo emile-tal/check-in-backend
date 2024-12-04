@@ -84,6 +84,13 @@ router.route('/register')
                 password: hashedPass,
                 email
             })
+            await knex('stats').insert({
+                user_id: newUserId,
+                games_played_single: 0,
+                games_played_multi: 0,
+                total_points: 0,
+                max_score: 0
+            })
             const jwtToken = jwt.sign(
                 { id: newUserId, name: username }, process.env.JWT_SECRET
             )
