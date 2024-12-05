@@ -5,7 +5,6 @@ import { hashPass } from "../security.js";
  * @returns { Promise<void> }
  */
 export async function seed(knex) {
-    // Deletes ALL existing entries
     const userPassword = await hashPass('pass')
     const otheruserPassword = await hashPass('otherpass')
 

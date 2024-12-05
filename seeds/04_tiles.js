@@ -3,7 +3,6 @@
  * @returns { Promise<void> }
  */
 export async function seed(knex) {
-    // Deletes ALL existing entries
     await knex('tiles').del();
     await knex('tiles').insert([
         {
@@ -20,7 +19,7 @@ export async function seed(knex) {
             game_id: 1,
             room: 'lobby',
             row: 2,
-            column: 4
+            column: 2
         },
         {
             id: 3,

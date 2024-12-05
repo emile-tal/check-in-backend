@@ -3,7 +3,6 @@
  * @returns { Promise<void> }
  */
 export async function seed(knex) {
-    // Deletes ALL existing entries
     await knex('multiplayer').del();
     await knex('multiplayer').insert([
         {

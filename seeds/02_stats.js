@@ -3,7 +3,6 @@
  * @returns { Promise<void> }
  */
 export async function seed(knex) {
-    // Deletes ALL existing entries
     await knex('stats').del();
     await knex('stats').insert([
         {
