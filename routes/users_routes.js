@@ -1,35 +1,15 @@
-import bcrypt from 'bcrypt'
+import { checkPass, hashPass, verifyToken } from '../security.js'
+
 import configuration from '../knexfile.js'
 import dotenv from 'dotenv'
 import express from 'express'
 import initKnex from 'knex'
 import jwt from 'jsonwebtoken'
-import { verifyToken } from '../authentication.js'
 
 dotenv.config()
 
-const saltRounds = 10
-
 const knex = initKnex(configuration)
 const router = express.Router()
-
-const hashPass = async (password) => {
-    try {
-        const hashedPass = await bcrypt.hash(password, saltRounds)
-        return hashedPass
-    } catch (error) {
-        console.error(error)
-    }
-}
-
-const checkPass = async (password, dbPass) => {
-    try {
-        const match = await bcrypt.compare(password, dbPass)
-        return match
-    } catch (error) {
-        console.error(error)
-    }
-}
 
 router.route('/')
     .get(verifyToken, async (req, res) => {

@@ -9,6 +9,7 @@ export async function seed(knex) {
         {
             id: 1,
             user_id: 1,
+            name: 'my_game',
             draw_0: 'pool',
             draw_1: 'pool',
             draw_2: 'ballroom',
@@ -17,6 +18,7 @@ export async function seed(knex) {
         {
             id: 2,
             user_id: 1,
+            name: 'my_other_game',
             draw_0: 'bar',
             draw_1: 'restaurant',
             draw_2: 'golf',
