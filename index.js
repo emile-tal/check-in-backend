@@ -2,6 +2,8 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
 import gamesRoutes from './routes/games_routes.js'
+import http from 'http'
+import { setUpSocket } from './socket.js'
 import statsRoutes from './routes/stats_routes.js'
 import usersRoutes from './routes/users_routes.js'
 import { verifyToken } from './security.js'
@@ -14,6 +16,9 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
+
+const server = http.createServer(app)
+setUpSocket(server)
 
 app.use('/users', usersRoutes)
 app.use('/stats', verifyToken, statsRoutes)
