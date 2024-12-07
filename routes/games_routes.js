@@ -23,9 +23,9 @@ router.route('/')
     })
     .post(async (req, res) => {
         const { name, draw_0, draw_1, draw_2, is_singleplayer } = req.body
-        if (!name || !draw_0 || !draw_1 || !draw_2 || !is_singleplayer) {
-            return res.status(400).json({ message: 'All fields are required to save new game' })
-        }
+        // if (!name || !draw_0 || !draw_1 || !draw_2 || !is_singleplayer) {
+        //     return res.status(400).json({ message: 'All fields are required to save new game' })
+        // }
         try {
             const [newGameId] = await knex(`games`).insert({
                 user_id: req.id.id,
@@ -148,23 +148,6 @@ router.route('/:id/tiles')
             res.status(201).json({ message: `Tiles successfully saved` })
         } catch (error) {
             res.status(500).json({ message: `Unable to save tiles for game ${req.params.id}` })
-        }
-    })
-
-router.route('/multi')
-    .get(async (req, res) => {
-        try {
-            const multiplayerGames = await knex('multiplayer').where({ is_open: 1 }).join('games', 'multiplayer.games_id', 'game.id')
-                .select(
-                    "game.id",
-                    "game.name",
-                )
-            if (!multiplayerGames) {
-                return res.status(404).json({ message: 'No games found at this moment' })
-            }
-            res.status(200).json({ message: 'Games retrieved successfully', games: multiplayerGames })
-        } catch (error) {
-            res.status(500).json({ message: 'Unable to retrieve multiplayer game details' })
         }
     })
 
