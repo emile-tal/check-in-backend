@@ -28,17 +28,20 @@ router.route('/')
 router.route('/login')
     .post(async (req, res) => {
         const { username, password } = req.body
-
+        console.log(username, password)
         if (!username || !password) {
             return res.status(400).json({ message: "Username and password is required" })
         }
-
+        if (password.length < 8) {
+            return res.status(400).json({ message: "Password must have 8 characters minimum" })
+        }
         try {
             const user = await knex(`user`).where({ username: username }).first()
             if (!user) {
-                return res.status(401).json({ message: "Username is incorrect" })
+                return res.status(401).json({ message: "User does not exist" })
             }
-            if (!checkPass(password, user.password)) {
+            const passwordValid = await checkPass(password, user.password)
+            if (!passwordValid) {
                 return res.status(401).json({ message: "Password is incorrect" })
             }
             const jwtToken = jwt.sign(
@@ -57,7 +60,17 @@ router.route('/register')
         if (!username || !password || !email) {
             return res.status(400).json({ message: "Username, password and email is required" })
         }
+
+        if (password.length < 8) {
+            return res.status(400).json({ message: "Password must have 8 characters minimum" })
+        }
+
         try {
+            const userExists = await knex(`user`).where({ username: username }).first()
+            if (userExists) {
+                return res.status(400).json({ message: "User already exists" })
+            }
+
             const hashedPass = await hashPass(password)
             const [newUserId] = await knex(`user`).insert({
                 username,

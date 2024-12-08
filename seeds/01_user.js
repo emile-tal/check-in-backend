@@ -5,8 +5,8 @@ import { hashPass } from "../security.js";
  * @returns { Promise<void> }
  */
 export async function seed(knex) {
-    const userPassword = await hashPass('pass')
-    const otheruserPassword = await hashPass('otherpass')
+    const userPassword = await hashPass('password')
+    const otheruserPassword = await hashPass('otherpassword')
 
     await knex('user').del();
     await knex('user').insert([

@@ -52,9 +52,8 @@ io.on('connection', (socket) => {
         socket.to(roomName).emit('start', drawTiles)
     })
 
-    socket.on('played', (roomName, tilesInPlay, drawTiles, gridSize) => {
-        console.log(roomName, tilesInPlay, drawTiles, gridSize)
-        socket.to(roomName).emit('opponent played', tilesInPlay, drawTiles, gridSize)
+    socket.on('played', (roomName, tilesInPlay, drawTiles, gridSize, opponentPoints, opponentTurns) => {
+        socket.to(roomName).emit('opponent played', tilesInPlay, drawTiles, gridSize, opponentPoints, opponentTurns)
     })
 
     socket.on('disconnect', () => console.log('user disconnected'))
