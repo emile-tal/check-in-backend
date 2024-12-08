@@ -23,9 +23,6 @@ router.route('/')
     })
     .post(async (req, res) => {
         const { name, draw_0, draw_1, draw_2, is_singleplayer } = req.body
-        // if (!name || !draw_0 || !draw_1 || !draw_2 || !is_singleplayer) {
-        //     return res.status(400).json({ message: 'All fields are required to save new game' })
-        // }
         try {
             const [newGameId] = await knex(`games`).insert({
                 user_id: req.id.id,
@@ -58,7 +55,7 @@ router.route('/:id')
             if (!game) {
                 return res.status(404).json({ message: `No game with id ${req.params.id} found` })
             }
-            const { user_id, name, created_at, updated_at, ...sendGame } = game
+            const { user_id, created_at, updated_at, ...sendGame } = game
             res.status(200).json({
                 message: 'Game details retrieved successfully',
                 game: sendGame
@@ -89,6 +86,16 @@ router.route('/:id')
             })
         } catch (error) {
             res.status(500).json({ message: `Unable to retrieve game ${req.params.id} for user ${req.id.id}` })
+        }
+    })
+    .delete(async (req, res) => {
+        try {
+            const deletedGame = await knex(`games`).where({ id: req.params.id }).delete()
+            if (!deletedGame) {
+                res.status(404).json({ message: `Unable to delete game ${req.params.id}` })
+            }
+        } catch (error) {
+            res.status(500).json({ message: `Unable to delete game ${req.params.id}` })
         }
     })
 

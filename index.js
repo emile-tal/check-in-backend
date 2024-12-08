@@ -43,8 +43,6 @@ io.on('connection', (socket) => {
         const room = io.sockets.adapter.rooms.get(roomName);
         const size = room ? room.size : 0;
         socket.to(roomName).emit("room size", size)
-        console.log(roomName, '42')
-        console.log(size, '43')
     })
 
     socket.on('leave room', async (roomName) => {
@@ -56,7 +54,7 @@ io.on('connection', (socket) => {
 
     socket.on('start game', async ({ roomName, drawTiles }) => {
         socket.to(roomName).emit('start', drawTiles)
-        const test = await knex('multiplayer').where({ game_id: roomName }).update({ is_open: false })
+        await knex('multiplayer').where({ game_id: roomName }).update({ is_open: false })
     })
 
     socket.on('played', (roomName, tilesInPlay, drawTiles, gridSize, opponentPoints, opponentTurns) => {
