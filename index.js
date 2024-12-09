@@ -23,16 +23,18 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true
 }))
+
+const server = app.listen(PORT, () => {
+    console.log(`Listening on port ${PORT}`)
+})
+
+app.options('*', cors())
 app.use(express.json())
 
 app.use('/users', usersRoutes)
 app.use('/stats', verifyToken, statsRoutes)
 app.use('/games', verifyToken, gamesRoutes)
 app.use('/multi', verifyToken, multiRoutes)
-
-const server = app.listen(PORT, () => {
-    console.log(`Listening on port ${PORT}`)
-})
 
 const io = new Server(server, {
     cors: {
